@@ -91,6 +91,7 @@ class Tree {
 public:
 	Tree(T n = T(), Tree<T>* p = nullptr)
 		: value(n), parent(p) {
+		if(p != nullptr) p->attach(this);
 	}
 
 	T retrieve() const {
@@ -168,6 +169,7 @@ public:
 
 int main() {
 	Tree<int>* root = new Tree<int>(10);
+	Tree<int>* c3 = new Tree<int>(40, root);
 
 	Tree<int>* c1 = new Tree<int>(20);
 	Tree<int>* c2 = new Tree<int>(30);
@@ -177,4 +179,5 @@ int main() {
 
 	cout << root->child(0)->retrieve() << endl;
 	cout << root->child(1)->retrieve() << endl;
+	cout << root->child(2)->retrieve() << endl;
 }
