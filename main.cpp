@@ -31,6 +31,21 @@ public:
 		head = new Node<T>(value, head);
 	}
 
+	T pop_front() {
+		T val = 0;
+		if (empty()) {
+			throw std::runtime_error("Empty");
+		}
+		else {
+			Node<T>* temp = head;
+			head = head->next;
+			val = temp->element;
+			delete temp;
+			temp = nullptr;
+		}
+		return val;
+	}
+
 	void push_end(T value) {
 		if (empty()) {
 			push_front(value);
@@ -41,6 +56,24 @@ public:
 		}
 
 		ptr->next = new Node<T>(value, nullptr);
+	}
+
+	T pop_end() {
+		T val = 0;
+		if (empty() || (head != nullptr && head->next == nullptr)) {
+			pop_front();
+		}
+		else {
+			for (Node<T>* ptr = head; ptr != nullptr; ptr = ptr->next) {
+				if (ptr->next->next == nullptr) {
+					val = ptr->next->element;
+					delete ptr->next;
+					ptr->next = nullptr;
+					break;
+				}
+			}
+		}
+		return val;
 	}
 
 	int size() const {
@@ -55,13 +88,13 @@ public:
 		if (empty()) {
 			return;
 		}
-		while (list_head() && list_head()->element == n) {
+		while (head && head->element == n) {
 			Node<T>* temp = head;
 			head = head->next;
 			delete temp;
 			temp = nullptr;
 		}
-		for (Node<T>* ptr = list_head(); ptr && ptr->next;) {
+		for (Node<T>* ptr = head; ptr && ptr->next;) {
 			if (ptr->next->element == n) {
 				Node<T>* temp = ptr->next;
 				ptr->next = temp->next;
@@ -81,6 +114,30 @@ public:
 			delete temp;
 		}
 	}
+};
+
+template<typename T>
+class Queue {
+	List<T> l;
+public:
+	bool empty() const {
+		return l.empty();
+	}
+	T top() const {
+		if (!empty()) {
+			l.list_head->retrieve();
+		}
+		else {
+			throw std::runtime_error("Empty");
+		}
+	}
+	void push(T n) {
+		l.push_end(n);
+	}
+	T pop() {
+		return l.pop_front();
+	}
+
 };
 
 template<typename T>
@@ -158,6 +215,25 @@ public:
 		parent = nullptr;
 	}
 
+	void bft() {
+		Queue<Tree<T>*> q;
+		q.push(this);
+		while (!q.empty()) {
+			Tree<T>* p = q.pop();
+			cout << p->retrieve() << endl;
+			for (Node<Tree<T>*>* ptr = p->children.list_head(); ptr != nullptr; ptr = ptr->next) {
+				q.push(ptr->element);
+			}
+		}
+	}
+
+	void dft() {
+		cout << retrieve() << endl;
+		for (Node<Tree<T>*>* ptr = children.list_head(); ptr != nullptr; ptr = ptr->next) {
+			ptr->element->dft();
+		}
+	}
+
 	~Tree() {
 		Node<Tree<T>*>* ptr = children.list_head();
 		while (ptr) {
@@ -168,16 +244,15 @@ public:
 };
 
 int main() {
-	Tree<int>* root = new Tree<int>(10);
-	Tree<int>* c3 = new Tree<int>(40, root);
-
-	Tree<int>* c1 = new Tree<int>(20);
-	Tree<int>* c2 = new Tree<int>(30);
-
-	root->attach(c1);
-	root->attach(c2);
-
-	cout << root->child(0)->retrieve() << endl;
-	cout << root->child(1)->retrieve() << endl;
-	cout << root->child(2)->retrieve() << endl;
+	Tree<string>* a = new Tree<string>("A");
+	Tree<string>* b = new Tree<string>("B", a);
+	Tree<string>* d = new Tree<string>("D", b);
+	Tree<string>* u = new Tree<string>("U", a);
+	Tree<string>* l = new Tree<string>("L", u);
+	Tree<string>* w = new Tree<string>("W", a);
+	Tree<string>* a2 = new Tree<string>("A", w);
+	Tree<string>* h = new Tree<string>("H", a2);
+	Tree<string>* a3 = new Tree<string>("A", w);
+	Tree<string>* b2 = new Tree<string>("B", a3);
+	a->bft();
 }
