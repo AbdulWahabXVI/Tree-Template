@@ -137,7 +137,27 @@ public:
 	T pop() {
 		return l.pop_front();
 	}
+};
 
+template<typename T>
+class Stack {
+	List<T> l;
+public:
+	bool empty() {
+		return l.empty();
+	}
+	T top() {
+		return l.end();
+	}
+	void push(T n) {
+		l.push_end(n);
+	}
+	T pop() {
+		return l.pop_end();
+	}
+	void display() {
+		l.display();
+	}
 };
 
 template<typename T>
@@ -220,7 +240,7 @@ public:
 		q.push(this);
 		while (!q.empty()) {
 			Tree<T>* p = q.pop();
-			cout << p->retrieve() << endl;
+			cout << p->retrieve();
 			for (Node<Tree<T>*>* ptr = p->children.list_head(); ptr != nullptr; ptr = ptr->next) {
 				q.push(ptr->element);
 			}
@@ -228,9 +248,28 @@ public:
 	}
 
 	void dft() {
-		cout << retrieve() << endl;
+		cout << retrieve();
 		for (Node<Tree<T>*>* ptr = children.list_head(); ptr != nullptr; ptr = ptr->next) {
 			ptr->element->dft();
+		}
+	}
+
+	void dft2() {
+		for (Node<Tree<T>*>* ptr = children.list_head(); ptr != nullptr; ptr = ptr->next) {
+			ptr->element->dft2();
+		}
+		cout << retrieve();
+	}
+
+	void dft3() {
+		Stack<Tree<T>*> s;
+		s.push(this);
+		while (!s.empty()) {
+			Tree<T>* p = s.pop();
+			cout << p->retrieve();
+			for (Node<Tree<T>*>* ptr = p->children.list_head(); ptr != nullptr; ptr = ptr->next) {
+				s.push(ptr->element);
+			}
 		}
 	}
 
@@ -254,5 +293,10 @@ int main() {
 	Tree<string>* h = new Tree<string>("H", a2);
 	Tree<string>* a3 = new Tree<string>("A", w);
 	Tree<string>* b2 = new Tree<string>("B", a3);
+	a->dft();
+	cout << endl;
+	a->dft2();
+	cout << endl;
 	a->bft();
+	cout << endl;
 }
